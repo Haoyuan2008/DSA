@@ -1,0 +1,8 @@
+﻿章节,知识点标签,题干,选项A,选项B,选项C,选项D,选项E,选项F,答案,解析,回读提示
+示例,栈 · LIFO,"What does this code print?
+```python
+s = []
+s.append(""x"")
+print(s.pop())
+```",`x`,`None`,`s`,,,A,pop() removes and returns the last item pushed: `x`.,"L10 notes, section 1."
+示例,队列 · deque,Which end of a `deque` does `popleft()` remove from?,the front,the back,the middle,both ends,,A,`popleft()` removes from the front (left). `pop()` removes from the back.,"L11 notes, section 3."
