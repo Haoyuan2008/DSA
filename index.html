@@ -713,6 +713,13 @@ VIEWS.ranking = function(){
 async function renderRanking(){
   const body = $('#rankBody');
   if(!body) return;
+  if(location.host !== 'dsa-review-dojo.app.workbuddy.host'){
+    body.innerHTML = '<div class="card" style="text-align:center;color:var(--dim)">'
+      +'<div style="font-weight:700;margin-bottom:8px;color:var(--ink)">排行榜暂不可用</div>'
+      +'<div style="font-size:13px;line-height:1.7">排行榜需要登录云端账号，当前 GitHub Pages 链接不支持云端登录。<br>如需使用排行榜，请访问 WorkBuddy 链接（同一网站，功能完整）。</div>'
+      +'</div>';
+    return;
+  }
   if(!cloud){ body.innerHTML = '<div class="card" style="text-align:center;color:var(--dim)">云服务未加载，请刷新页面重试。</div>'; return; }
   const { data: session } = await cloud.auth.getSession();
   if(!session){
