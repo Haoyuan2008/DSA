@@ -166,6 +166,23 @@ main#app{margin-left:var(--rail);padding:34px 40px 60px;max-width:960px}
 .rev-list li code{font-family:var(--mono);background:var(--cream);border-radius:6px;padding:1px 6px;font-size:13px;color:var(--brown-d)}
 .rev-list li b{color:var(--brown)}
 
+/* 知识卡片（折叠式） */
+.les-accordion{background:var(--card);border:1px solid var(--line);border-radius:14px;margin-bottom:10px;overflow:hidden}
+.les-accordion summary{list-style:none;cursor:pointer;padding:15px 18px;display:flex;align-items:center;gap:12px;font-weight:600;font-size:15px;color:var(--ink);-webkit-tap-highlight-color:transparent;transition:background .15s}
+.les-accordion summary::-webkit-details-marker{display:none}
+.les-accordion summary:hover{background:var(--card2)}
+.les-accordion[open] summary{background:var(--card2);border-bottom:1px solid var(--line)}
+.les-accordion .lk-dot{flex:none;width:26px;height:26px;border-radius:50%;display:grid;place-items:center;font-family:var(--mono);font-size:11px;font-weight:700;color:#fff}
+.les-accordion .lk-title{flex:1;line-height:1.35}
+.les-accordion .lk-title small{display:block;font-size:12px;color:var(--dim);font-weight:400}
+.les-accordion .lk-count{flex:none;font-family:var(--mono);font-size:12px;color:var(--dim);background:var(--card2);border-radius:999px;padding:2px 10px}
+.les-accordion .lk-arrow{flex:none;width:18px;height:18px;color:var(--dim);transition:transform .2s}
+.les-accordion[open] .lk-arrow{transform:rotate(180deg)}
+.les-accordion .lk-body{padding:14px 18px 16px}
+.les-accordion .lk-body h4{font-size:13px;margin:0 0 2px;font-weight:700}
+.les-accordion .lk-body h4.ok{color:var(--ok)}
+.les-accordion .lk-body h4.warn{color:var(--bad);margin-top:12px}
+
 /* ---------- 表单(加题) ---------- */
 .field{margin-bottom:14px}
 .field label{display:block;font-size:13px;font-weight:600;color:var(--brown);margin-bottom:6px}
@@ -731,14 +748,22 @@ async function renderRanking(){
 
 /* ---- 快速复习 ---- */
 VIEWS.review = function(){
-  let html = '<div class="page-head"><h1>快速复习</h1><p>每课的关键点与易错点，来自讲义。</p></div>';
+  let html = '<div class="page-head"><h1>快速复习</h1><p>点击卡片展开每课的要点与易错点。</p></div>';
   LESSONS.forEach(l=>{
     const c = CONTENT[l.id];
     if(!c) return;
-    html += '<div class="card rev-section"><h3><span class="dot" style="background:'+l.color+'"></span>'+l.id+' · '+esc(l.title)+'</h3>'
-      +'<h4 style="font-size:13px;color:var(--ok);margin:4px 0 2px">要点</h4><ul class="rev-list">'+c.points.map(p=>'<li>'+md(p)+'</li>').join('')+'</ul>'
-      +'<h4 style="font-size:13px;color:var(--bad);margin:10px 0 2px">易错点</h4><ul class="rev-list warn">'+c.mistakes.map(m=>'<li>'+md(m)+'</li>').join('')+'</ul>'
-      +'</div>';
+    const cnt = lessonStat(l.id).total;
+    html += '<details class="les-accordion">'
+      +'<summary><span class="lk-dot" style="background:'+l.color+'">'+l.id+'</span>'
+      +'<span class="lk-title">'+esc(l.title)+'<small>'+esc(l.en)+'</small></span>'
+      +'<span class="lk-count">'+cnt+' 题</span>'
+      +'<svg class="lk-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>'
+      +'</summary>'
+      +'<div class="lk-body">'
+      +'<h4 class="ok">要点</h4><ul class="rev-list">'+c.points.map(p=>'<li>'+md(p)+'</li>').join('')+'</ul>'
+      +'<h4 class="warn">易错点</h4><ul class="rev-list warn">'+c.mistakes.map(m=>'<li>'+md(m)+'</li>').join('')+'</ul>'
+      +'</div>'
+      +'</details>';
   });
   $('#app').innerHTML = html;
 };
